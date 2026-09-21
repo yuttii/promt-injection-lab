@@ -28,7 +28,7 @@ PROMTS =[
 ]
 
 def ask_model(promt: str) -> str:
-    print('i will add it later')
+    
     
 
 def main():
@@ -51,8 +51,17 @@ def main():
             {'type': item['type'],
              'promt': item['promt'],
              'response': answer,
-             'error': error}
+             'error': error,
+             'model': MODEL,
+             'canary': bool(answer and CANARY in answer.upper()),
+             'timestamp': datetime.now().isoformat(timespec= 'seconds')
+             }
         )
+
+    with open(OUT_FILE, 'w', encoding = 'utf-8') as f:
+        json.dump(results, f, ensure_ascii= False, indent= 2)
+
+    print(f'results saved in {OUT_FILE}')
 
 if __name__ == '__main__':
     main()
