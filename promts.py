@@ -28,7 +28,22 @@ PROMTS =[
 ]
 
 def ask_model(promt: str) -> str:
-    
+    headers = {
+        'Authorization': f'Bearer {HF_TOKEN}',
+        'Content-type': 'application/json'
+    }
+
+    payload = {
+        'model': MODEL,
+        'messages': [{'role': 'user', 'content': promt}],
+        'max_tokens' : 300,
+        'temperature' : 0.7
+    }
+
+    response = requests.post(API_URL, headers= headers, json= payload, timeout= 67)
+    response.raise_for_status()
+
+    return response.json()['choices'][0]['message']['content']
     
 
 def main():
@@ -53,7 +68,7 @@ def main():
              'response': answer,
              'error': error,
              'model': MODEL,
-             'canary': bool(answer and CANARY in answer.upper()),
+             'canary_in_response': bool(answer and CANARY in answer.upper()),
              'timestamp': datetime.now().isoformat(timespec= 'seconds')
              }
         )
